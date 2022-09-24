@@ -8,11 +8,18 @@ import { database } from '../firebase.init';
 const collectionRef = collection(database, 'tasks');
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+  const [data, setData] = useState([]);
 
+  let tasks = [];
   const getData = () => {
     onSnapshot(collectionRef, (doc) => {
-      setTasks(doc.docs);
+      doc.docs.map((task) => tasks.push({ ...task.data(), id: task.id }));
+      //   tasks.sort(function (a, b) {
+      //     if (a.index > b.index) return 1;
+      //     if (a.index < b.index) return -1;
+      //     return 0;
+      //   });
+      setData(tasks);
     });
   };
 
@@ -22,14 +29,12 @@ const Tasks = () => {
 
   return (
     <>
-      {tasks.map((task) => (
+      {data.map((data) => (
         <div
-          key={task.id}
+          key={data.id}
           className="h-14 w-96 bg-blue-200 flex justify-between items-center px-3 rounded-lg"
         >
-          <p className="font-semibold text-gray-600 text-lg">
-            {console.log(task.data().todo)}
-          </p>
+          <p className="font-semibold text-gray-600 text-lg">{data.todo}</p>
           <div className="flex space-x-2">
             <GoTriangleUp
               className="text-blue-600 cursor-pointer"
