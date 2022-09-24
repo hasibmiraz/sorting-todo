@@ -25,6 +25,7 @@ const Tasks = () => {
           />
         </div>
       </div>
+      {/* Add new todo */}
       <div className="h-14 w-96 bg-blue-200 flex justify-between items-center px-3 rounded-lg">
         <form className="w-full flex justify-between">
           <input
