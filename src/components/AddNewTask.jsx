@@ -1,16 +1,22 @@
 import React from 'react';
 import { database } from '../firebase.init';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot } from 'firebase/firestore';
+import { useState } from 'react';
 
 const AddNewTask = () => {
+  const [todosLength, setTodosLength] = useState([]);
   const collectionRef = collection(database, 'tasks');
+
+  onSnapshot(collectionRef, (doc) => {
+    setTodosLength(doc.docs.length);
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newTodo = e.target.todo.value;
     addDoc(collectionRef, {
       todo: newTodo,
-      index: 1,
+      index: todosLength + 1,
     }).then(() => {
       e.target.todo.value = '';
     });
