@@ -2,13 +2,20 @@ import React from 'react';
 import { database } from '../firebase.init';
 import { addDoc, collection, onSnapshot } from 'firebase/firestore';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const AddNewTask = () => {
-  const [todosLength, setTodosLength] = useState([]);
+  const [tasksLength, setTasksLength] = useState([]);
   const collectionRef = collection(database, 'tasks');
 
-  onSnapshot(collectionRef, (doc) => {
-    setTodosLength(doc.docs.length);
+  const getLength = () => {
+    onSnapshot(collectionRef, (doc) => {
+      setTasksLength(doc.docs.length);
+    });
+  };
+
+  useEffect(() => {
+    getLength();
   });
 
   const handleSubmit = (e) => {
@@ -16,7 +23,7 @@ const AddNewTask = () => {
     const newTodo = e.target.todo.value;
     addDoc(collectionRef, {
       todo: newTodo,
-      index: todosLength + 1,
+      index: tasksLength + 1,
     }).then(() => {
       e.target.todo.value = '';
     });
@@ -36,7 +43,6 @@ const AddNewTask = () => {
           className="text-center bg-blue-600 text-white w-[18%] rounded cursor-pointer hover:scale-95 duration-150"
         />
       </form>
-      <div className="flex space-x-2"></div>
     </div>
   );
 };
