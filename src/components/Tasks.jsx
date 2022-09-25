@@ -8,7 +8,7 @@ import { database } from '../firebase.init';
 const collectionRef = collection(database, 'tasks');
 
 const Tasks = () => {
-  const [data, setData] = useState([]);
+  const [allData, setAllData] = useState([]);
 
   let tasks = [];
 
@@ -20,7 +20,7 @@ const Tasks = () => {
         if (a.index < b.index) return -1;
         return 0;
       });
-      setData(tasks);
+      setAllData(tasks);
     });
   };
 
@@ -35,7 +35,7 @@ const Tasks = () => {
 
   return (
     <>
-      {data.map((data) => (
+      {allData.map((data) => (
         <div
           key={data.id}
           className="h-14 w-96 bg-blue-200 flex justify-between items-center px-3 rounded-lg"
@@ -43,12 +43,22 @@ const Tasks = () => {
           <p className="font-semibold text-gray-600 text-lg">{data.todo}</p>
           <div className="flex space-x-2">
             <GoTriangleUp
-              className="text-blue-600 cursor-pointer"
+              disabled={allData.indexOf(data) === 0}
+              className={
+                allData.indexOf(data) === 0
+                  ? 'text-gray-400'
+                  : 'text-blue-600 cursor-pointer'
+              }
               title="Move Up"
               size={20}
             />
             <GoTriangleDown
-              className="text-blue-600 cursor-pointer"
+              disabled={allData.indexOf(data) === allData.length - 1}
+              className={
+                allData.indexOf(data) === allData.length - 1
+                  ? 'text-gray-400'
+                  : 'text-blue-600 cursor-pointer'
+              }
               title="Move Down"
               size={20}
             />
