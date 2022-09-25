@@ -1,5 +1,5 @@
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { GoTriangleUp, GoTriangleDown } from 'react-icons/go';
@@ -12,7 +12,7 @@ const Tasks = () => {
 
   let tasks = [];
 
-  const getData = () => {
+  const getData = useCallback(() => {
     onSnapshot(collectionRef, (doc) => {
       doc.docs.map((task) => tasks.push({ ...task.data(), id: task.id }));
       tasks.sort(function (a, b) {
@@ -22,7 +22,7 @@ const Tasks = () => {
       });
       setAllData(tasks);
     });
-  };
+  });
 
   const handleDelete = (id) => {
     const deleteTask = doc(database, 'tasks', id);
@@ -31,7 +31,7 @@ const Tasks = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [getData]);
 
   return (
     <>
