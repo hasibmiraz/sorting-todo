@@ -1,4 +1,4 @@
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -11,16 +11,22 @@ const Tasks = () => {
   const [data, setData] = useState([]);
 
   let tasks = [];
+
   const getData = () => {
     onSnapshot(collectionRef, (doc) => {
       doc.docs.map((task) => tasks.push({ ...task.data(), id: task.id }));
-      //   tasks.sort(function (a, b) {
-      //     if (a.index > b.index) return 1;
-      //     if (a.index < b.index) return -1;
-      //     return 0;
-      //   });
+      tasks.sort(function (a, b) {
+        if (a.index > b.index) return 1;
+        if (a.index < b.index) return -1;
+        return 0;
+      });
       setData(tasks);
     });
+  };
+
+  const handleDelete = (id) => {
+    const deleteTask = doc(database, 'tasks', id);
+    deleteDoc(deleteTask).then((res) => console.log('Deleted'));
   };
 
   useEffect(() => {
@@ -47,6 +53,7 @@ const Tasks = () => {
               size={20}
             />
             <MdOutlineCancel
+              onClick={() => handleDelete(data.id)}
               className="text-red-500 cursor-pointer"
               title="Delete"
               size={20}
